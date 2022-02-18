@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 import utils
 
@@ -17,14 +17,14 @@ def page_all_candidates():
     return render_template("list.html", candidates=candidates)
 
 
-@app.route("/candidate/<uid>/")
+@app.route("/candidate/<int:uid>/")
 def page_candidate(uid):
     """
     Выводит данные кандидата по id
     :param uid: id кандидата
     :return: Данные кандидата
     """
-    candidate = utils.get_candidate(int(uid))
+    candidate = utils.get_candidate(uid)
     return render_template("card.html", candidate=candidate)
 
 
@@ -40,7 +40,7 @@ def search_candidate_name(candidate_name):
     return render_template("search.html", candidates=candidates, count=count)
 
 
-@app.route("/skill/<skill_name>/")
+@app.route("/skill/<skill_name>/", methods=['GET'])
 def page_skill(skill_name):
     """
     Выводит кандидатов с заданным навыком
@@ -49,7 +49,10 @@ def page_skill(skill_name):
     """
     candidates = utils.get_candidates_by_skill(skill_name)
     count = len(candidates)
+    limit = int(request.args.get('limit', count))
+    candidates = candidates[:limit]
     return render_template("skill.html", candidates=candidates, count=count, skill=skill_name)
 
 
-app.run()
+if __name__ == "__main__":
+    app.run()

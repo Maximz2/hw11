@@ -35,7 +35,7 @@ def get_candidates_by_name(candidate_name):
     list_candidates = load_candidates_from_json()
     candidates = []
     for candidate in list_candidates:
-        if candidate_name in candidate["name"]:
+        if candidate_name.lower() in candidate["name"].lower():
             candidates.append(candidate)
     return candidates
 
@@ -49,6 +49,6 @@ def get_candidates_by_skill(skill_name):
     list_candidates = load_candidates_from_json()
     candidates = []
     for candidate in list_candidates:
-        if skill_name in candidate["skills"].split(", "):
+        if skill_name.lower() in candidate["skills"].lower().split(", "):
             candidates.append(candidate)
     return candidates
