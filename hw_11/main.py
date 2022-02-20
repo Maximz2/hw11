@@ -2,9 +2,11 @@
 
 from flask import Flask, render_template, request
 
-import utils
+from classes.candidate_manager import CandidateManager
+from config import PATH
 
 app = Flask(__name__)
+candidate_manager = CandidateManager(PATH)
 
 
 @app.route("/")
@@ -13,7 +15,7 @@ def page_all_candidates():
     Выводит список всех кандидатов
     :return: Список кандидатов
     """
-    candidates = utils.load_candidates_from_json()
+    candidates = candidate_manager.load_candidates_from_json()
     return render_template("list.html", candidates=candidates)
 
 
@@ -24,7 +26,9 @@ def page_candidate(uid):
     :param uid: id кандидата
     :return: Данные кандидата
     """
-    candidate = utils.get_candidate(uid)
+    candidate = candidate_manager.get_candidate_by_id(uid)
+    if not candidate:
+        return f"<h2>Кандидат не найден</h2>"
     return render_template("card.html", candidate=candidate)
 
 
@@ -35,7 +39,7 @@ def search_candidate_name(candidate_name):
     :param candidate_name: Имя кандидата
     :return: Список кандидатов с заданным именем
     """
-    candidates = utils.get_candidates_by_name(candidate_name)
+    candidates = candidate_manager.get_candidates_by_name(candidate_name)
     count = len(candidates)
     return render_template("search.html", candidates=candidates, count=count)
 
@@ -47,7 +51,7 @@ def page_skill(skill_name):
     :param skill_name: Навык
     :return: Список кандидатов с навыком
     """
-    candidates = utils.get_candidates_by_skill(skill_name)
+    candidates = candidate_manager.get_candidates_by_skill(skill_name)
     count = len(candidates)
     limit = int(request.args.get('limit', count))
     candidates = candidates[:limit]

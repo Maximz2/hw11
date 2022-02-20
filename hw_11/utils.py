@@ -2,14 +2,15 @@
 
 import json
 
+from config import PATH
 
-def load_candidates_from_json(path="candidates.json"):
+
+def load_candidates_from_json():
     """
     Возвращает список всех кандидатов
-    :param path: файл json
     :return: список кандидатов
     """
-    with open(path, encoding="utf-8") as f:
+    with open(PATH, encoding="utf-8") as f:
         candidates = json.load(f)
     return candidates
 
